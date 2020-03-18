@@ -1,17 +1,22 @@
-from qiskit import QuantumRegister, QuantumCircuit
+from qiskit import QuantumCircuit, QuantumRegister
 import os
 os.chdir('../../Preprocessing')
 from data_preparation import is_stochastic_vector
-os.chdir('../Encoding/Unary_Encoding')
+os.chdir('../Encoding/Unary-Encoding')
 import numpy as np
 from qiskit.aqua.circuits.gates import mcry
 
 
-def partial_swap(angle, circuit, ctrl_qubit, target_qubit):
-    circuit.cx(target_qubit, ctrl_qubit)
-    circuit.cry(angle, ctrl_qubit, target_qubit)
-    circuit.cx(target_qubit, ctrl_qubit)
-    return circuit
+def partial_swap(angle, circuit, target_qubits):
+    if len(target_qubits) != 2:
+        raise NameError('The target qubits list is not of size 2.')
+    else:
+        ctrl_qubit = target_qubits[0]
+        target_qubit = target_qubits[1]
+        circuit.cx(target_qubit, ctrl_qubit)
+        circuit.cry(angle, ctrl_qubit, target_qubit)
+        circuit.cx(target_qubit, ctrl_qubit)
+        return circuit
 
 
 def angles(distribution): #ADD THE POSSIBILITY TO HAVE AN ODD N
@@ -63,16 +68,10 @@ def controlled_partial_swap(angle, circuit, ancillae_qubits, control_qubits, tar
         raise NameError('The target qubits list is not of size 2.')
     else:
         ctrl_qubit = target_qubits[0]
-        target_qubit = target_qubits[1]
-        if len(control_qubits) != 1:    
-            circuit.mcmt(control_qubits + [target_qubit], ancillae_qubits[1
-                         :], QuantumCircuit.cx, ctrl_qubit)
-            circuit.mcry(angle, control_qubits + [ctrl_qubit], [target_qubit], None, 'noancilla')
-            circuit.mcmt(control_qubits + [target_qubit], ancillae_qubits[1:], QuantumCircuit.cx, ctrl_qubit)
-        else:
-            circuit.mcmt([control_qubits, target_qubit], ancillae_qubits[1:], QuantumCircuit.cx, ctrl_qubit)
-            circuit.mcry(angle, [control_qubits, ctrl_qubit], [target_qubit], None, 'noancilla')
-            circuit.mcmt([control_qubits, target_qubit], ancillae_qubits[1:], QuantumCircuit.cx, ctrl_qubit)
+        target_qubit = target_qubits[1]  
+        circuit.mcmt(list(control_qubits) + [target_qubit], ancillae_qubits[1:], QuantumCircuit.cx, [ctrl_qubit])
+        circuit.mcry(angle, list(control_qubits) + [ctrl_qubit], target_qubit, None, 'noancilla')
+        circuit.mcmt(list(control_qubits) + [target_qubit], ancillae_qubits[1:], QuantumCircuit.cx, [ctrl_qubit])
         return circuit
     
     
@@ -86,13 +85,13 @@ def controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qu
         distribution_qubits = QuantumRegister(n_qubits)
         circuit.add_register(distribution_qubits)
     inter = int(n_qubits / 2)
-    circuit.mcmt(control_qubits, ancillae_qubits[1:], QuantumCircuit.cx, distribution_qubits[inter])
+    circuit.mcmt(control_qubits, ancillae_qubits[1:], QuantumCircuit.cx, [distribution_qubits[inter]])
     circuit = controlled_partial_swap(theta[inter - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - 1], distribution_qubits[inter]])
     for step in range(inter - 1):
         step = step + 1
         circuit = controlled_partial_swap(theta[inter - 1 - step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - step - 1], distribution_qubits[inter - step]])
         circuit = controlled_partial_swap(theta[inter - 1 + step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter + step - 1], distribution_qubits[inter + step]])
-    return circuit
+    return circuit, distribution_qubits
 
 
 def inverse_controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qubits, distribution_qubits):
@@ -106,5 +105,5 @@ def inverse_controlled_unary_encoding(distribution, circuit, ancillae_qubits, co
             circuit = controlled_partial_swap(-theta[step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[step], distribution_qubits[step + 1]])
             circuit = controlled_partial_swap(-theta[n_qubits - step - 2], circuit, ancillae_qubits, control_qubits, [distribution_qubits[n_qubits - step - 2], distribution_qubits[n_qubits - step - 1]])
         circuit = controlled_partial_swap(-theta[inter - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - 1], distribution_qubits[inter]])
-        circuit.mcmt(control_qubits, ancillae_qubits[1:], QuantumCircuit.cx, distribution_qubits[inter])
+        circuit.mcmt(control_qubits, ancillae_qubits[1:], QuantumCircuit.cx, [distribution_qubits[inter]])
         return circuit
