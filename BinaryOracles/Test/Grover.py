@@ -64,7 +64,6 @@ def controlled_reflection_strictly_lower_than(circuit, ancillae_qubits, control_
     second_ancilla_qubit = ancillae_qubits[1]
     circuit.mct(control_qubits, second_ancilla_qubit, ancillae_qubits[2:])
     circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
-    circuit.mcmt(control_qubits, ancillae_qubits[2:], QuantumCircuit.ch, [second_ancilla_qubit])
     circuit = controlled_strictly_lower_than_binary_oracle(circuit, ancillae_qubits, control_qubits, threshold_qubits, threshold)
     circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
     circuit.mct(control_qubits, second_ancilla_qubit, ancillae_qubits[2:])
