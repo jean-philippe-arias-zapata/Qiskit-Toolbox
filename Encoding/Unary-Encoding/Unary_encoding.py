@@ -52,11 +52,11 @@ def unary_encoding(distribution, circuit = None, distribution_qubits = None):
     theta = angles(distribution)
     inter = int(n_qubits / 2)
     circuit.x(distribution_qubits[inter])
-    circuit = partial_swap(theta[inter - 1], circuit, distribution_qubits[inter - 1], distribution_qubits[inter])
+    circuit = partial_swap(theta[inter - 1], circuit, [distribution_qubits[inter - 1], distribution_qubits[inter]])
     for step in range(inter - 1):
         step = step + 1
-        circuit = partial_swap(theta[inter - 1 - step], circuit, distribution_qubits[inter - 1 - step], distribution_qubits[inter - step])
-        circuit = partial_swap(theta[inter - 1 + step], circuit, distribution_qubits[inter - 1 + step], distribution_qubits[inter + step])
+        circuit = partial_swap(theta[inter - 1 - step], circuit, [distribution_qubits[inter - 1 - step], distribution_qubits[inter - step]])
+        circuit = partial_swap(theta[inter - 1 + step], circuit, [distribution_qubits[inter - 1 + step], distribution_qubits[inter + step]])
     return circuit, distribution_qubits
 
 
