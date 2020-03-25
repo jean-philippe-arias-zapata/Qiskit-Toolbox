@@ -31,11 +31,14 @@ def strictly_lower_than_binary_oracle(circuit, ancillae_qubits, threshold_qubits
 
 def reflection_strictly_lower_than(circuit, ancillae_qubits, threshold_qubits, threshold):
     main_ancilla_qubit = ancillae_qubits[0]
+    circuit.h(main_ancilla_qubit)
     circuit.x(main_ancilla_qubit)
     circuit.h(main_ancilla_qubit)
     circuit = strictly_lower_than_binary_oracle(circuit, ancillae_qubits, threshold_qubits, threshold)
     circuit.h(main_ancilla_qubit)
     circuit.x(main_ancilla_qubit)
+    circuit.h(main_ancilla_qubit)
+    circuit = strictly_lower_than_binary_oracle(circuit, ancillae_qubits, threshold_qubits, threshold)
     return circuit
 
 
@@ -62,9 +65,12 @@ def controlled_strictly_lower_than_binary_oracle(circuit, ancillae_qubits, contr
 
 def controlled_reflection_strictly_lower_than(circuit, ancillae_qubits, control_qubits, threshold_qubits, threshold):
     second_ancilla_qubit = ancillae_qubits[1]
+    circuit = controlled_strictly_lower_than_binary_oracle(circuit, ancillae_qubits, control_qubits, threshold_qubits, threshold)
+    circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
     circuit.mct(control_qubits, second_ancilla_qubit, ancillae_qubits[2:])
     circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
     circuit = controlled_strictly_lower_than_binary_oracle(circuit, ancillae_qubits, control_qubits, threshold_qubits, threshold)
     circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
     circuit.mct(control_qubits, second_ancilla_qubit, ancillae_qubits[2:])
+    circuit.mcry(-np.pi/2, control_qubits, second_ancilla_qubit, ancillae_qubits[2:], mode='basic')
     return circuit

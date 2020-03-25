@@ -38,14 +38,14 @@ def angles(distribution): #ADD THE POSSIBILITY TO HAVE AN ODD N
         raise NameError("The input vector is not a probability distribution or its dimension is not a multiple of 2.")
         
 
-def unary_encoding(distribution, circuit = None, distribution_qubits = None):
+def unary_encoding(distribution, circuit = QuantumCircuit(), distribution_qubits = None):
     n_qubits = len(distribution)
     if distribution_qubits == None:
-        if circuit == None: 
-            distribution_qubits = QuantumRegister(n_qubits)
+        distribution_qubits = QuantumRegister(n_qubits)
+        if circuit == QuantumCircuit(): 
             circuit = QuantumCircuit(distribution_qubits)
         else:
-            distribution_qubits = circuit.qubits
+            circuit.add_register(distribution_qubits)
     else:
         if len(distribution_qubits) != n_qubits:
             raise NameError('The number of distribution qubits is incompatible with the distribution size.')
