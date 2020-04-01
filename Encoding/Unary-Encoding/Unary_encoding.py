@@ -19,7 +19,7 @@ def partial_swap(angle, circuit, target_qubits):
         return circuit
 
 
-def angles(distribution): #ADD THE POSSIBILITY TO HAVE AN ODD N
+def unary_encoding_angles(distribution): #ADD THE POSSIBILITY TO HAVE AN ODD N
     distribution = np.array(distribution)
     n = len(distribution)
     if is_stochastic_vector(distribution) == True and n % 2 == 0:        
@@ -49,14 +49,14 @@ def unary_encoding(distribution, circuit = QuantumCircuit(), distribution_qubits
     else:
         if len(distribution_qubits) != n_qubits:
             raise NameError('The number of distribution qubits is incompatible with the distribution size.')
-    theta = angles(distribution)
-    inter = int(n_qubits / 2)
-    circuit.x(distribution_qubits[inter])
-    circuit = partial_swap(theta[inter - 1], circuit, [distribution_qubits[inter - 1], distribution_qubits[inter]])
-    for step in range(inter - 1):
+    theta = unary_encoding_angles(distribution)
+    middle = int(n_qubits / 2)
+    circuit.x(distribution_qubits[middle])
+    circuit = partial_swap(theta[middle - 1], circuit, [distribution_qubits[middle - 1], distribution_qubits[middle]])
+    for step in range(middle - 1):
         step = step + 1
-        circuit = partial_swap(theta[inter - 1 - step], circuit, [distribution_qubits[inter - 1 - step], distribution_qubits[inter - step]])
-        circuit = partial_swap(theta[inter - 1 + step], circuit, [distribution_qubits[inter - 1 + step], distribution_qubits[inter + step]])
+        circuit = partial_swap(theta[middle - 1 - step], circuit, [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]])
+        circuit = partial_swap(theta[middle - 1 + step], circuit, [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]])
     return circuit, distribution_qubits
 
 
@@ -76,7 +76,7 @@ def controlled_partial_swap(angle, circuit, ancillae_qubits, control_qubits, tar
     
     
 def controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qubits, distribution_qubits = None): #on veut aussi retourner distribution_qubits, modifier ce qui en découle
-    theta = angles(distribution)
+    theta = unary_encoding_angles(distribution)
     n_qubits = len(distribution)
     if distribution_qubits != None:
         if len(distribution_qubits) != n_qubits:
@@ -84,26 +84,26 @@ def controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qu
     else:
         distribution_qubits = QuantumRegister(n_qubits)
         circuit.add_register(distribution_qubits)
-    inter = int(n_qubits / 2)
-    circuit.mct(control_qubits, distribution_qubits[inter], ancillae_qubits[1:])
-    circuit = controlled_partial_swap(theta[inter - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - 1], distribution_qubits[inter]])
-    for step in range(inter - 1):
+    middle = int(n_qubits / 2)
+    circuit.mct(control_qubits, distribution_qubits[middle], ancillae_qubits[1:])
+    circuit = controlled_partial_swap(theta[middle - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle - 1], distribution_qubits[middle]])
+    for step in range(middle - 1):
         step = step + 1
-        circuit = controlled_partial_swap(theta[inter - 1 - step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - step - 1], distribution_qubits[inter - step]])
-        circuit = controlled_partial_swap(theta[inter - 1 + step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter + step - 1], distribution_qubits[inter + step]])
+        circuit = controlled_partial_swap(theta[middle - 1 - step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle - step - 1], distribution_qubits[middle - step]])
+        circuit = controlled_partial_swap(theta[middle - 1 + step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle + step - 1], distribution_qubits[middle + step]])
     return circuit, distribution_qubits
 
 
 def inverse_controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qubits, distribution_qubits):
-    theta = angles(distribution)
+    theta = unary_encoding_angles(distribution)
     n_qubits = len(distribution)
     if len(distribution_qubits) != n_qubits:
         raise NameError('The number of threshold qubits is incompatible with the distribution size.')
     else:
-        inter = int(n_qubits / 2)
-        for step in range(inter - 1):
+        middle = int(n_qubits / 2)
+        for step in range(middle - 1):
             circuit = controlled_partial_swap(-theta[step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[step], distribution_qubits[step + 1]])
             circuit = controlled_partial_swap(-theta[n_qubits - step - 2], circuit, ancillae_qubits, control_qubits, [distribution_qubits[n_qubits - step - 2], distribution_qubits[n_qubits - step - 1]])
-        circuit = controlled_partial_swap(-theta[inter - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[inter - 1], distribution_qubits[inter]])
-        circuit.mct(control_qubits, distribution_qubits[inter], ancillae_qubits[1:])
+        circuit = controlled_partial_swap(-theta[inter - 1], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle - 1], distribution_qubits[middle]])
+        circuit.mct(control_qubits, distribution_qubits[middle], ancillae_qubits[1:])
         return circuit
