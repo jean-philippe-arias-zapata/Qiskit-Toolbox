@@ -1,6 +1,5 @@
-from qiskit import QuantumCircuit
 from math import pi
-#from qiskit.aqua.circuits.fourier_transform_circuits import FourierTransformCircuits: library to use
+from qiskit.aqua.circuits.gates import mcry
 
 
 def do_swaps(circuit, qubits):
@@ -39,7 +38,7 @@ def controlled_quantum_fourier_transform(circuit, ctrl_qubits, ancillae_qubits, 
           n_target = len(target_qubits)
           if inverse == False:
               for i in range(n_target):
-                  circuit.mcmt(ctrl_qubits, ancillae_qubits, QuantumCircuit.ch, [target_qubits[i]])
+                  circuit.mcry(-pi/2, ctrl_qubits, target_qubits[i], ancillae_qubits, mode='basic')
                   for distance in range(n_target - i - 1):
                       distance = distance + 1
                       inter_ctrl = [target_qubits[distance + i]]
@@ -55,7 +54,7 @@ def controlled_quantum_fourier_transform(circuit, ctrl_qubits, ancillae_qubits, 
                       for ctrl in ctrl_qubits:
                           inter_ctrl.append(ctrl)
                       circuit.mcu1(- pi / 2**distance, inter_ctrl, target_qubits[i])
-                  circuit.mcmt(ctrl_qubits, ancillae_qubits, QuantumCircuit.ch, [target_qubits[i]])
+                  circuit.mcry(-pi/2, ctrl_qubits, target_qubits[i], ancillae_qubits, mode='basic')
     if bool_swaps:
         circuit = do_swaps(circuit, target_qubits)
     return circuit
