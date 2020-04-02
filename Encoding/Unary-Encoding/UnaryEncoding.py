@@ -1,4 +1,4 @@
-from qiskit import QuantumCircuit, QuantumRegister
+from qiskit import QuantumRegister
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import CnotGate, XGate
 from qiskit.extensions.standard.ry import CryGate
