@@ -55,7 +55,7 @@ class UnaryEncodingGate(Gate):
     
     def __init__(self, distribution):
         self.distribution = distribution
-        super().__init__(name=f"UnaryEncoding", num_qubits=len(distribution), params=distribution)
+        super().__init__(name=f"Unary Encoding", num_qubits=len(distribution), params=distribution)
     
     def _define(self):
             self.definition = []
