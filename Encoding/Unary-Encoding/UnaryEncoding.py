@@ -4,7 +4,9 @@ from qiskit.extensions.standard.x import CnotGate, XGate
 from qiskit.extensions.standard.ry import CryGate
 import os
 os.chdir('../../Preprocessing')
-from data_preparation import is_stochastic_vector
+from Classical_boolean_tests import is_stochastic_vector
+os.chdir('../Visualization')
+from Gate_visualization_tools import simp_pi_fy
 os.chdir('../Encoding/Unary-Encoding')
 import numpy as np
 
@@ -34,7 +36,7 @@ class PartialSwapGate(Gate):
     
     def __init__(self, angle):
         self.angle = angle
-        super().__init__(name=f"PartialSwap({angle})", num_qubits=2, params=[angle])
+        super().__init__(name=f"PartialSwap(" + simp_pi_fy(angle, 10**(-3), 10) + ")", num_qubits=2, params=[angle])
     
     def _define(self):
         definition = []
