@@ -1,8 +1,8 @@
 from math import pi
 import os
-os.chdir('../../QFT')
+os.chdir('../QFT')
 from QFT import quantum_fourier_transform, controlled_quantum_fourier_transform
-os.chdir('../QuantumAdder/Test')
+os.chdir('../QuantumAddition')
 
 
 def quantum_incrementor(epsilon, circuit):
