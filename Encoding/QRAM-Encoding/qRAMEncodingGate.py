@@ -52,5 +52,5 @@ class qRAMEncodingGate(Gate):
             ctrl_q = list(map(lambda x: q[self.num_qubits - x - 1], range(step)))
             for region in range(2 ** step):
                 self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step)), q, []))
-                self.definition.append((RYGate(2 * theta[step][region]).control(len(ctrl_q)), ctrl_q + [q[self.num_qubits - step - 1]], []))
+                self.definition.append((RYGate(- 2 * theta[step][region]).control(len(ctrl_q)), ctrl_q + [q[self.num_qubits - step - 1]], []))
                 self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step)), q, []))
