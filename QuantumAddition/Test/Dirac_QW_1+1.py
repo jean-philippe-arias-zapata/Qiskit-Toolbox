@@ -1,11 +1,11 @@
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit, execute, Aer
-from Quantum_adder import controlled_quantum_adder
+from Quantum_incrementor import controlled_quantum_incrementor
 
 
 def Dirac_QW_spatial_translation(epsilon, circuit, spin_qubit, position_qubits, ancilla_qubit):
-    circuit = controlled_quantum_adder(- epsilon, circuit, spin_qubit, ancilla_qubit, position_qubits)
+    circuit = controlled_quantum_incrementor(- epsilon, circuit, spin_qubit, ancilla_qubit, position_qubits)
     circuit.x(spin_qubit)
-    circuit = controlled_quantum_adder(epsilon, circuit, spin_qubit, ancilla_qubit, position_qubits)
+    circuit = controlled_quantum_incrementor(epsilon, circuit, spin_qubit, ancilla_qubit, position_qubits)
     circuit.x(spin_qubit)
     return circuit
 

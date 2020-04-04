@@ -1,11 +1,11 @@
 from math import pi
 import os
-os.chdir('../../QFT/Test')
+os.chdir('../../QFT')
 from QFT import quantum_fourier_transform, controlled_quantum_fourier_transform
-os.chdir('../../QuantumAdder/Test')
+os.chdir('../QuantumAdder/Test')
 
 
-def quantum_adder(epsilon, circuit):
+def quantum_incrementor(epsilon, circuit):
     qubits = circuit.qubits
     n_qubits = circuit.n_qubits
     circuit = quantum_fourier_transform(circuit, qubits)
@@ -15,7 +15,7 @@ def quantum_adder(epsilon, circuit):
     return circuit
 
 
-def controlled_quantum_adder(epsilon, circuit, ctrl_qubits, ancillae_qubits, target_qubits):
+def controlled_quantum_incrementor(epsilon, circuit, ctrl_qubits, ancillae_qubits, target_qubits):
     n_target = len(target_qubits)
     circuit = controlled_quantum_fourier_transform(circuit, ctrl_qubits, ancillae_qubits, target_qubits)
     for i in range(n_target):
