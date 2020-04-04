@@ -49,8 +49,7 @@ class PartialSwapGate(Gate):
         for inst in rule:
             definition.append(inst)
         self.definition = definition
-
-
+        
 
 class UnaryEncodingGate(Gate):
     """Unary Encoding gate. """
