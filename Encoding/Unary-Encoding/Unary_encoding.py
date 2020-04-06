@@ -14,7 +14,7 @@ def partial_swap(angle, circuit, target_qubits):
         ctrl_qubit = target_qubits[0]
         target_qubit = target_qubits[1]
         circuit.cx(target_qubit, ctrl_qubit)
-        circuit.cry(angle, ctrl_qubit, target_qubit)
+        circuit.cry(-angle, ctrl_qubit, target_qubit)
         circuit.cx(target_qubit, ctrl_qubit)
         return circuit
 
@@ -56,7 +56,7 @@ def unary_encoding(distribution, circuit = QuantumCircuit(), distribution_qubits
     for step in range(middle - 1):
         step = step + 1
         circuit = partial_swap(theta[middle - 1 - step], circuit, [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]])
-        circuit = partial_swap(theta[middle - 1 + step], circuit, [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]])
+        circuit = partial_swap(-theta[middle - 1 + step], circuit, [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]])
     return circuit, distribution_qubits
 
 
@@ -90,7 +90,7 @@ def controlled_unary_encoding(distribution, circuit, ancillae_qubits, control_qu
     for step in range(middle - 1):
         step = step + 1
         circuit = controlled_partial_swap(theta[middle - 1 - step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle - step - 1], distribution_qubits[middle - step]])
-        circuit = controlled_partial_swap(theta[middle - 1 + step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle + step - 1], distribution_qubits[middle + step]])
+        circuit = controlled_partial_swap(-theta[middle - 1 + step], circuit, ancillae_qubits, control_qubits, [distribution_qubits[middle + step - 1], distribution_qubits[middle + step]])
     return circuit, distribution_qubits
 
 

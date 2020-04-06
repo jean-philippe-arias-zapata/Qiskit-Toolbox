@@ -43,7 +43,7 @@ class PartialSwapGate(Gate):
         q = QuantumRegister(2)
         rule = [
                 (CnotGate(), [q[1], q[0]], []),
-                (CryGate(self.angle), [q[0], q[1]], []),
+                (CryGate(-self.angle), [q[0], q[1]], []),
                 (CnotGate(), [q[1], q[0]], [])
                 ]
         for inst in rule:
@@ -68,4 +68,4 @@ class UnaryEncodingGate(Gate):
             for step in range(middle - 1):
                 step = step + 1
                 self.definition.append((PartialSwapGate(theta[middle - 1 - step]), [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]], []))
-                self.definition.append((PartialSwapGate(theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], [])) 
+                self.definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], [])) 
