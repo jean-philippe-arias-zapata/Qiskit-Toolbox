@@ -1,7 +1,7 @@
 from math import pi
 
 
-def simp_pi_fy(angle, error, desired_precision):
+def format_angle(angle, error, desired_precision):
     q = 0
     for i in range(desired_precision):
         i = i + 1
