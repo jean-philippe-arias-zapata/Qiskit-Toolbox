@@ -1,6 +1,6 @@
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.u1 import Cu1Gate
-from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister, execute, Aer
+from qiskit import QuantumRegister
 import os
 os.chdir('../QFT')
 from QFTGate import QFTGate, DoSwapsGate
