@@ -30,22 +30,4 @@ class QuantumAdderGate(Gate):
             self.definition.append((QFTGate(n, False).inverse(), y, []))
             self.definition.append((DoSwapsGate(n), y, []))
 
-            
-qr = QuantumRegister(4)
-x = qr[:2]
-y = qr[2:]
-cl = ClassicalRegister(2)
-circ = QuantumCircuit(qr, cl)
-circ.x(x)
-circ.x(y)
-circ.append(QuantumAdderGate(4), qr, [])
-circ.measure(y, cl)
-
-backend = Aer.get_backend('qasm_simulator')
-
-job_sim = execute(circ, backend, shots=10000)
-
-sim_result = job_sim.result()
-print(sim_result.get_counts(circ))
-
         
