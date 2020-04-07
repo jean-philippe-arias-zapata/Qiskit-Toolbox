@@ -1,22 +1,24 @@
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit, execute, Aer
 import os
-os.chdir('../QFT')
-from QFT import quantum_fourier_transform
-os.chdir('../QuantumAddition')
+os.chdir('../../QFT')
+from QFT import quantum_fourier_transform, do_swaps
+os.chdir('../QuantumAddition/Test')
 from math import pi
 
-### TO BE FINISHED 
+
 
 def quantum_adder(circuit, to_add_qubits, target_qubits):
     n_qubits = len(target_qubits)
     if n_qubits != len(to_add_qubits):
         raise NameError('The two quantum registers have not the same size.')
     else:
-        circuit = quantum_fourier_transform(circuit, target_qubits)
+        circuit = do_swaps(circuit, target_qubits)
+        circuit = quantum_fourier_transform(circuit, target_qubits, inverse=False, bool_swaps=False)
         for i in range(n_qubits):
             for distance in range(i + 1): 
                 circuit.cu1(pi / 2**distance, to_add_qubits[i - distance], target_qubits[n_qubits - i - 1])
-        circuit = quantum_fourier_transform(circuit, target_qubits, inverse=True)
+        circuit = quantum_fourier_transform(circuit, target_qubits, inverse=True, bool_swaps=False)
+        circuit = do_swaps(circuit, target_qubits)
         return circuit
 
 
@@ -29,7 +31,7 @@ circuit.add_register(to_add_qubits)
 
 
 circuit.x(target_qubits[0])  #NOT WORKING !! Have to handle the problem (probably algorithm problem)
-#circuit = quantum_adder(circuit, to_add_qubits, target_qubits)
+circuit = quantum_adder(circuit, to_add_qubits, target_qubits)
 circuit.measure(circuit.qubits, clbits)
 
 backend = Aer.get_backend('qasm_simulator')
