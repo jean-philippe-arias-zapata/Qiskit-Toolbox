@@ -68,4 +68,4 @@ class UnaryEncodingGate(Gate):
             for step in range(middle - 1):
                 step = step + 1
                 self.definition.append((PartialSwapGate(theta[middle - 1 - step]), [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]], []))
-                self.definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], [])) 
+                self.definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], []))
