@@ -32,25 +32,28 @@ def qRAM_encoding_angles(distribution, n_qubits):
         return angles
     else:
         raise NameError('The distribution is not compatible with the number of qubits or is not normalized or has negative values.')      
-        
 
+                
 class qRAMEncodingGate(Gate):
-     """qRAM Encoding gate."""
+    """qRAM Encoding gate."""
     
-    def __init__(self, num_qubits, distribution):
+    def __init__(self, num_qubits, distribution, least_significant_bit_first=True):
         self.num_qubits = num_qubits
-        self.distribution = distribution
-        super().__init__(name=f"qRAM Encoding", num_qubits=num_qubits, params=distribution)
-    
+        super().__init__(name=f"qRAM Encoding", num_qubits=num_qubits, params=[least_significant_bit_first] + distribution)
+        
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
-        theta = qRAM_encoding_angles(self.distribution, self.num_qubits)
-        self.definition.append((U3Gate(2 * theta[0][0], 0, 0), q[self.num_qubits - 1], []))
+        if self.params[0]:
+            q = q[::-1]
+        theta = qRAM_encoding_angles(self.params[1:], self.num_qubits)
+        self.definition.append((U3Gate(2 * theta[0][0], 0, 0), [q[self.num_qubits - 1]], []))
         for step in range(self.num_qubits - 1):
             step = step + 1
             ctrl_q = list(map(lambda x: q[self.num_qubits - x - 1], range(step)))
             for region in range(2 ** step):
-                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step)), q, []))
+                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step, False)), q, []))
                 self.definition.append((RYGate(- 2 * theta[step][region]).control(len(ctrl_q)), ctrl_q + [q[self.num_qubits - step - 1]], []))
-                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step)), q, []))
+                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step, False)), q, []))
+        if self.params[0]:
+            q = q[::-1]        
