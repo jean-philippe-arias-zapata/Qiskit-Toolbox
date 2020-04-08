@@ -11,7 +11,7 @@ from math import pi
 # We are in the Qiskit convention, i. e. the least significant bit first convention.
 # To go to the most significant bit first convention, you need to :
 #   - In line 34, x[n - i - 1] --> x[i];
-#   - Add SWAPs gate action on y before the QFTGate and after the QFTGate.inverse.        
+#   - Add SWAPs gate acting on y before the QFTGate and after the QFTGate.inverse.        
 
 
 class QuantumAdderGate(Gate):

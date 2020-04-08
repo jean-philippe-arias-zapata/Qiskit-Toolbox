@@ -8,7 +8,7 @@ from math import pi
 # We are in the Qiskit convention, i. e. the least significant bit first convention.
 # To go to the most significant bit first convention, you need to :
 #   - In line 23, to_add_qubits[n_qubits - i - 1] --> to_add_qubits[i];
-#   - Add SWAPs gate action on y before the QFT and after the inverse of QFT. 
+#   - Add SWAPs gate acting on y before the QFT and after the inverse of QFT. 
 
 
 def quantum_adder(circuit, to_add_qubits, target_qubits):
