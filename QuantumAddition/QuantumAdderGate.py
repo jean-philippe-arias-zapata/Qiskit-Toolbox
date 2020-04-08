@@ -1,11 +1,17 @@
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.u1 import Cu1Gate
-from qiskit import QuantumRegister
+from qiskit import QuantumRegister, ClassicalRegister, Aer, execute, QuantumCircuit
 import os
 os.chdir('../QFT')
 from QFTGate import QFTGate, DoSwapsGate
 os.chdir('../QuantumAddition')
 from math import pi
+
+
+# We are in the Qiskit convention, i. e. the least significant bit first convention.
+# To go to the most significant bit first convention, you need to :
+#   - In line 34, x[n - i - 1] --> x[i];
+#   - Add SWAPs gate action on y before the QFTGate and after the QFTGate.inverse.        
 
 
 class QuantumAdderGate(Gate):
@@ -22,12 +28,10 @@ class QuantumAdderGate(Gate):
             n = self.num_qubits//2
             x = q[:n]
             y = q[n:]
-            self.definition.append((DoSwapsGate(n), y, []))
             self.definition.append((QFTGate(n, False), y, []))
             for i in range(n):
                 for j in range(n - i):
-                    self.definition.append((Cu1Gate(pi / 2 ** j), [x[i], y[n - 1 - i - j]], []))
+                    self.definition.append((Cu1Gate(pi / 2 ** j), [x[n - i - 1], y[n - 1 - i - j]], []))
             self.definition.append((QFTGate(n, False).inverse(), y, []))
-            self.definition.append((DoSwapsGate(n), y, []))
 
         
