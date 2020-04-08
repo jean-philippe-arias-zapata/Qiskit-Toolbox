@@ -1,4 +1,4 @@
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, Aer, execute
+from qiskit import QuantumRegister
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
 
