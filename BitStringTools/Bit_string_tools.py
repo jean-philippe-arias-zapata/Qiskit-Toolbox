@@ -1,23 +1,29 @@
-from qiskit import QuantumCircuit, QuantumRegister
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, Aer, execute
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
 
 
-def to_bin(region, step):
+def to_bin(region, step, least_significant_bit_first=True):
     to_bin = format(region, 'b')
     if len(to_bin) != step:
         difference = step - len(to_bin)
         while(difference != 0):
-            to_bin = '0' + to_bin
+            to_bin = '0' + to_bin 
             difference = difference - 1
+    if least_significant_bit_first:
+        to_bin = to_bin[::-1]    
     return to_bin
 
 
-def to_number(string): #Attention aux conventions de Python et Qiskit
+def to_number(string, least_significant_bit_first=True):
     number = 0 
     n = len(string)
-    for i in range(n):
-        number = number + int(string[n - i - 1]) * 2 ** i
+    if least_significant_bit_first:
+        for i in range(n):
+            number = number + int(string[i]) * 2 ** i
+    else:
+        for i in range(n):
+            number = number + int(string[n - i - 1]) * 2 ** i
     return number
 
 
