@@ -10,7 +10,8 @@ def to_bin(region, step, least_significant_bit_first=True):
         while(difference != 0):
             to_bin = '0' + to_bin 
             difference = difference - 1
-    if least_significant_bit_first:
+    to_bin = to_bin[::-1] 
+    if least_significant_bit_first == False:
         to_bin = to_bin[::-1]    
     return to_bin
 
@@ -36,14 +37,15 @@ def x_gates_region(circuit, qubits, string):
 class XRegionGate(Gate):
     """X-Region gate. """
     
-    def __init__(self, num_qubits, string):
+    def __init__(self, num_qubits, number, least_significant_bit_first=True):
         self.num_qubits = num_qubits
-        self.string = string
-        super().__init__(name=f"XRegion({string})", num_qubits=num_qubits, params=[string])
+        self.number = number
+        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[to_bin(number, num_qubits, least_significant_bit_first)])
     
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
-        for i in range(len(self.string)):
-            if self.string[i] == '0':
+        for i in range(self.num_qubits):
+            if self.params[0][i] == '0':
                 self.definition.append((XGate(), [q[self.num_qubits - i - 1]], []))
+
