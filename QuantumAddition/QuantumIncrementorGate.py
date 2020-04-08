@@ -4,7 +4,7 @@ os.chdir('../QFT')
 from QFTGate import QFTGate, DoSwapsGate
 os.chdir('../QuantumAddition')
 from qiskit.circuit import Gate
-from qiskit import QuantumRegister
+from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, Aer, execute
 from qiskit.extensions.standard.u1 import U1Gate
 
 
@@ -18,9 +18,11 @@ class QuantumIncrementorGate(Gate):
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
+        if self.params[0] == False:
+            q = q[::-1]
         self.definition.append((QFTGate(self.num_qubits, bool_swaps=False), q, []))
         for i in range(self.num_qubits):
             self.definition.append((U1Gate(float(pi * self.params[1])/2**i), [q[self.num_qubits - i - 1]], []))
         self.definition.append((QFTGate(self.num_qubits, bool_swaps=False).inverse(), q, []))
         if self.params[0] == False:
-            self.definition.append((DoSwapsGate(self.num_qubits), q, []))
+            q = q[::-1]

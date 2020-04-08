@@ -33,10 +33,12 @@ def qRAM_encoding_angles(distribution, n_qubits):
        
         
 
-def qRAM_encoding(distribution, n_qubits):
+def qRAM_encoding(distribution, n_qubits, least_significant_bit_first=True):
     theta = qRAM_encoding_angles(distribution, n_qubits)
     qubits = QuantumRegister(n_qubits)
-    circuit = QuantumCircuit(qubits)   
+    circuit = QuantumCircuit(qubits)
+    if least_significant_bit_first:
+        qubits = qubits[::-1]
     circuit.u3(2 * theta[0][0], 0, 0, qubits[n_qubits - 1])
     for step in range(n_qubits - 1):
         step = step + 1

@@ -18,12 +18,10 @@ def to_bin(region, step, least_significant_bit_first=True):
 def to_number(string, least_significant_bit_first=True):
     number = 0 
     n = len(string)
-    if least_significant_bit_first:
-        for i in range(n):
+    if least_significant_bit_first == False:
+            string = string[::-1]
+    for i in range(n):
             number = number + int(string[i]) * 2 ** i
-    else:
-        for i in range(n):
-            number = number + int(string[n - i - 1]) * 2 ** i
     return number
 
 
