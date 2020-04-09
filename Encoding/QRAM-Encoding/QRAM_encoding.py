@@ -4,7 +4,7 @@ os.chdir('../../Preprocessing')
 from Classical_data_preparation import lineic_preprocessing, euclidean_norm
 from Classical_boolean_tests import is_log_concave_encoding_compatible
 os.chdir('../BitStringTools')
-from Bit_string_tools import to_bin, x_gates_region
+from Bit_string_tools import x_gates_region
 os.chdir('../Encoding/QRAM-Encoding')
 import numpy as np
 from qiskit.aqua.circuits.gates import mcry
@@ -44,9 +44,11 @@ def qRAM_encoding(distribution, n_qubits, least_significant_bit_first=True):
         step = step + 1
         control_qubits = list(map(lambda x: qubits[n_qubits - x - 1], range(step)))
         for region in range(2 ** step):
-            circuit = x_gates_region(circuit, qubits, to_bin(region, step))
+            circuit = x_gates_region(circuit, qubits, region)
             circuit.mcry(- 2 * theta[step][region], control_qubits, qubits[n_qubits - step - 1], None, 'noancilla')
-            circuit = x_gates_region(circuit, qubits, to_bin(region, step))        
+            circuit = x_gates_region(circuit, qubits, region) 
+    if least_significant_bit_first:
+        qubits = qubits[::-1]
     return circuit
 
 #Faire l'inverse de la qRAM encoding

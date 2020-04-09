@@ -3,7 +3,7 @@ from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
 
 
-def to_bin(region, step, least_significant_bit_first=True):
+def to_binary(region, step, least_significant_bit_first=True):
     to_bin = format(region, 'b')
     if len(to_bin) != step:
         difference = step - len(to_bin)
@@ -26,9 +26,10 @@ def to_number(string, least_significant_bit_first=True):
     return number
 
 
-def x_gates_region(circuit, qubits, string):
+def x_gates_region(circuit, qubits, number, least_significant_bit_first=True):
     n_qubits = len(qubits)
-    for i in range(len(string)):
+    string = to_binary(number, n_qubits, least_significant_bit_first)
+    for i in range(n_qubits):
         if string[i] == '0':
               circuit.x(qubits[n_qubits - i - 1])
     return circuit 
@@ -40,7 +41,7 @@ class XRegionGate(Gate):
     def __init__(self, num_qubits, number, least_significant_bit_first=True):
         self.num_qubits = num_qubits
         self.number = number
-        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[to_bin(number, num_qubits, least_significant_bit_first)])
+        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[to_binary(number, num_qubits, least_significant_bit_first)])
     
     def _define(self):
         self.definition = []

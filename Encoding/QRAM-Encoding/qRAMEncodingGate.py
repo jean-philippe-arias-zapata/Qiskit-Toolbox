@@ -4,7 +4,7 @@ os.chdir('../../Preprocessing')
 from Classical_data_preparation import lineic_preprocessing, euclidean_norm
 from Classical_boolean_tests import is_log_concave_encoding_compatible
 os.chdir('../BitStringTools')
-from Bit_string_tools import to_bin, XRegionGate
+from Bit_string_tools import XRegionGate
 os.chdir('../Encoding/QRAM-Encoding')
 import numpy as np
 from qiskit.extensions.standard.u3 import U3Gate
@@ -52,8 +52,8 @@ class qRAMEncodingGate(Gate):
             step = step + 1
             ctrl_q = list(map(lambda x: q[self.num_qubits - x - 1], range(step)))
             for region in range(2 ** step):
-                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step, False)), q, []))
+                self.definition.append((XRegionGate(self.num_qubits, region), q, []))
                 self.definition.append((RYGate(- 2 * theta[step][region]).control(len(ctrl_q)), ctrl_q + [q[self.num_qubits - step - 1]], []))
-                self.definition.append((XRegionGate(self.num_qubits, to_bin(region, step, False)), q, []))
+                self.definition.append((XRegionGate(self.num_qubits, region), q, []))
         if self.params[0]:
-            q = q[::-1]        
+            q = q[::-1]
