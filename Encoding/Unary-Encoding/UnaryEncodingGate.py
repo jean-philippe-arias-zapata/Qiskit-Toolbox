@@ -7,6 +7,8 @@ os.chdir('../../Preprocessing')
 from Classical_boolean_tests import is_stochastic_vector
 os.chdir('../Visualization')
 from Gate_visualization_tools import format_angle
+os.chdir('../AbstractGates')
+from qiwiGate import qiwiGate
 os.chdir('../Encoding/Unary-Encoding')
 import numpy as np
 
@@ -51,21 +53,26 @@ class PartialSwapGate(Gate):
         self.definition = definition
         
 
-class UnaryEncodingGate(Gate):
+class UnaryEncodingGate(qiwiGate):
     """Unary Encoding gate. """
     
-    def __init__(self, distribution):
-        self.distribution = distribution
-        super().__init__(name=f"Unary Encoding", num_qubits=len(distribution), params=distribution)
+    def __init__(self, distribution, least_significant_bit_first=True):
+        self.num_qubits = len(distribution)
+        self.least_significant_bit_first = least_significant_bit_first
+        super().__init__(name=f"Unary Encoding", num_qubits=len(distribution), params=distribution, least_significant_bit_first = least_significant_bit_first)
     
     def _define(self):
             self.definition = []
             distribution_qubits = QuantumRegister(self.num_qubits)
             theta = unary_encoding_angles(self.params)
             middle = int(self.num_qubits / 2)
+            if self.least_significant_bit_first:
+                distribution_qubits = distribution_qubits[::-1]
             self.definition.append((XGate(), [distribution_qubits[middle]], []))
             self.definition.append((PartialSwapGate(theta[middle - 1]), [distribution_qubits[middle - 1], distribution_qubits[middle]], []))
             for step in range(middle - 1):
                 step = step + 1
                 self.definition.append((PartialSwapGate(theta[middle - 1 - step]), [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]], []))
                 self.definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], []))
+            if self.least_significant_bit_first:
+                distribution_qubits = distribution_qubits[::-1]

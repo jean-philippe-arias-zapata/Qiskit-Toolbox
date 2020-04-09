@@ -1,28 +1,31 @@
-from math import pi
-import os
-os.chdir('../QFT')
-from QFTGate import QFTGate, DoSwapsGate
-os.chdir('../QuantumAddition')
-from qiskit.circuit import Gate
-from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, Aer, execute
+from qiskit import QuantumRegister
 from qiskit.extensions.standard.u1 import U1Gate
+import os
+os.chdir('../AbstractGates')
+from qiwiGate import qiwiGate
+os.chdir('../QFT')
+from QFTGate import QFTGate
+os.chdir('../QuantumAddition')
+from math import pi
 
 
-class QuantumIncrementorGate(Gate):
+
+class QuantumIncrementorGate(qiwiGate):
     """Quantum Incrementor gate."""
     
     def __init__(self, num_qubits, epsilon, least_significant_bit_first=True):
         self.num_qubits = num_qubits
-        super().__init__(name=f"Quantum Incrementor({epsilon})", num_qubits=num_qubits, params=[least_significant_bit_first, epsilon])
+        self.least_significant_bit_first = least_significant_bit_first
+        super().__init__(name=f"Quantum Incrementor({epsilon})", num_qubits=num_qubits, params=[epsilon], least_significant_bit_first=least_significant_bit_first)
         
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
-        if self.params[0] == False:
+        if self.least_significant_bit_first == False:
             q = q[::-1]
         self.definition.append((QFTGate(self.num_qubits, bool_swaps=False), q, []))
         for i in range(self.num_qubits):
-            self.definition.append((U1Gate(float(pi * self.params[1])/2**i), [q[self.num_qubits - i - 1]], []))
+            self.definition.append((U1Gate(float(pi * self.params[0])/2**i), [q[self.num_qubits - i - 1]], []))
         self.definition.append((QFTGate(self.num_qubits, bool_swaps=False).inverse(), q, []))
-        if self.params[0] == False:
+        if self.least_significant_bit_first == False:
             q = q[::-1]

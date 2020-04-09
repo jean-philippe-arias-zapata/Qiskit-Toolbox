@@ -1,15 +1,16 @@
 from qiskit import QuantumRegister
+from qiskit.extensions.standard.u3 import U3Gate
+from qiskit.extensions.standard.ry import RYGate
 import os
 os.chdir('../../Preprocessing')
 from Classical_data_preparation import lineic_preprocessing, euclidean_norm
 from Classical_boolean_tests import is_log_concave_encoding_compatible
+os.chdir('../AbstractGates')
+from qiwiGate import qiwiGate
 os.chdir('../BitStringTools')
 from Bit_string_tools import XRegionGate
 os.chdir('../Encoding/QRAM-Encoding')
 import numpy as np
-from qiskit.extensions.standard.u3 import U3Gate
-from qiskit.extensions.standard.ry import RYGate
-from qiskit.circuit import Gate
 
 
 def qRAM_encoding_angles(distribution, n_qubits):
@@ -34,19 +35,20 @@ def qRAM_encoding_angles(distribution, n_qubits):
         raise NameError('The distribution is not compatible with the number of qubits or is not normalized or has negative values.')      
 
                 
-class qRAMEncodingGate(Gate):
+class qRAMEncodingGate(qiwiGate):
     """qRAM Encoding gate."""
     
     def __init__(self, num_qubits, distribution, least_significant_bit_first=True):
         self.num_qubits = num_qubits
-        super().__init__(name=f"qRAM Encoding", num_qubits=num_qubits, params=[least_significant_bit_first] + distribution)
+        self.least_significant_bit_first = least_significant_bit_first
+        super().__init__(name=f"qRAM Encoding", num_qubits=num_qubits, params=distribution, least_significant_bit_first=least_significant_bit_first)
         
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
-        if self.params[0]:
+        if self.least_significant_bit_first:
             q = q[::-1]
-        theta = qRAM_encoding_angles(self.params[1:], self.num_qubits)
+        theta = qRAM_encoding_angles(self.params, self.num_qubits)
         self.definition.append((U3Gate(2 * theta[0][0], 0, 0), [q[self.num_qubits - 1]], []))
         for step in range(self.num_qubits - 1):
             step = step + 1
@@ -55,5 +57,5 @@ class qRAMEncodingGate(Gate):
                 self.definition.append((XRegionGate(self.num_qubits, region), q, []))
                 self.definition.append((RYGate(- 2 * theta[step][region]).control(len(ctrl_q)), ctrl_q + [q[self.num_qubits - step - 1]], []))
                 self.definition.append((XRegionGate(self.num_qubits, region), q, []))
-        if self.params[0]:
+        if self.least_significant_bit_first:
             q = q[::-1]

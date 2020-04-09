@@ -1,6 +1,10 @@
 from qiskit import QuantumRegister
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
+import os
+os.chdir('../AbstractGates')
+from qiwiGate import qiwiGate
+os.chdir('../BitStringTools')
 
 
 def to_binary(decimal_number, num_qubits, least_significant_bit_first=True):
@@ -35,18 +39,19 @@ def x_gates_region(circuit, qubits, number, least_significant_bit_first=True):
     return circuit 
 
 
-class XRegionGate(Gate):
+class XRegionGate(qiwiGate):
     """X-Region gate. """
     
     def __init__(self, num_qubits, number, least_significant_bit_first=True):
         self.num_qubits = num_qubits
-        self.number = number
-        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[to_binary(number, num_qubits, least_significant_bit_first)])
+        self.least_significant_bit_first = least_significant_bit_first
+        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[number], least_significant_bit_first=least_significant_bit_first)
     
     def _define(self):
         self.definition = []
         q = QuantumRegister(self.num_qubits)
+        binary = to_binary(self.params[0], self.num_qubits, self.least_significant_bit_first)
         for i in range(self.num_qubits):
-            if self.params[0][i] == '0':
+            if binary[i] == '0':
                 self.definition.append((XGate(), [q[self.num_qubits - i - 1]], []))
 
