@@ -1,5 +1,5 @@
-from qiskit.circuit import Gate
 from qiskit import QuantumRegister
+from qiwiGate import qiwiGate
 from ControlGate import ControlGate
 import os 
 os.chdir("../QFT")
@@ -10,11 +10,12 @@ os.chdir("../AbstractGates")
 #TO BE TESTED
 
 
-class AmplitudeEstimationGate(Gate):
+class AmplitudeEstimationGate(qiwiGate):
     """Amplitude Estimation gate."""
     
-    def __init__(self, num_accuracy_qubits, grover_gate):
+    def __init__(self, num_accuracy_qubits, grover_gate, least_significant_bit_first):
         self.num_qubits = num_accuracy_qubits + grover_gate.num_qubits
+        
         self.num_accuracy_qubits = num_accuracy_qubits
         self.grover_gate = grover_gate
         if len(grover_gate.params) == 0:
