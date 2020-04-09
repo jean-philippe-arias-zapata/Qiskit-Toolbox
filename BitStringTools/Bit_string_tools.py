@@ -3,10 +3,10 @@ from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
 
 
-def to_binary(region, step, least_significant_bit_first=True):
-    to_bin = format(region, 'b')
-    if len(to_bin) != step:
-        difference = step - len(to_bin)
+def to_binary(decimal_number, num_qubits, least_significant_bit_first=True):
+    to_bin = format(decimal_number, 'b')
+    if len(to_bin) != num_qubits:
+        difference = num_qubits - len(to_bin)
         while(difference != 0):
             to_bin = '0' + to_bin 
             difference = difference - 1
@@ -16,13 +16,13 @@ def to_binary(region, step, least_significant_bit_first=True):
     return to_bin
 
 
-def to_number(string, least_significant_bit_first=True):
+def to_decimal(binary_string, least_significant_bit_first=True):
     number = 0 
-    n = len(string)
+    n = len(binary_string)
     if least_significant_bit_first == False:
-            string = string[::-1]
+            binary_string = binary_string[::-1]
     for i in range(n):
-            number = number + int(string[i]) * 2 ** i
+            number = number + int(binary_string[i]) * 2 ** i
     return number
 
 
