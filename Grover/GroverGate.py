@@ -1,6 +1,7 @@
 from qiskit import QuantumRegister
 from qiskit.extensions.standard.h import HGate
 from AbstractGates.qiwiGate import qiwiGate
+from BinaryOracles.ReflectionGate import ReflectionGate
 
 
 class GroverGate(qiwiGate):
@@ -17,8 +18,9 @@ class GroverGate(qiwiGate):
                 raise NameError("The desired convention and the " + self.params[0].name + " convention are not compatible.")
         self.definition = []
         q = QuantumRegister(self.num_qubits)
+        self.definition.append((self.params[0], q, []))  
         for i in range(self.num_qubits):
-            self.append((HGate(), [q[i]], []))
-        self.append((self.params[0], q, []))
+            self.definition.append((HGate(), [q[i]], []))
+        self.definition.append((ReflectionGate(self.num_qubits, 0, self.least_significant_bit_first), q, []))     
         for i in range(self.num_qubits):
-            self.append((HGate(), [q[i]], []))
+            self.definition.append((HGate(), [q[i]], []))
