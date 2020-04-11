@@ -1,9 +1,6 @@
 from qiskit import QuantumRegister
-import os 
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir("../Grover")
 from qiskit.extensions.standard.h import HGate
+from AbstractGates.qiwiGate import qiwiGate
 
 
 class GroverGate(qiwiGate):
