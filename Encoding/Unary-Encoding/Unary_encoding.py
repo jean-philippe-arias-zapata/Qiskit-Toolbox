@@ -1,8 +1,5 @@
 from qiskit import QuantumCircuit, QuantumRegister
-import os
-os.chdir('../../Preprocessing')
-from data_preparation import is_stochastic_vector
-os.chdir('../Encoding/Unary-Encoding')
+from Preprocessing.Classical_data_preparation import is_stochastic_vector
 import numpy as np
 from qiskit.aqua.circuits.gates import mcry
 

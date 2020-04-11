@@ -1,11 +1,7 @@
 from qiskit import QuantumRegister, QuantumCircuit
-import os
-os.chdir('../../Preprocessing')
-from Classical_data_preparation import lineic_preprocessing, euclidean_norm
-from Classical_boolean_tests import is_log_concave_encoding_compatible
-os.chdir('../BitStringTools')
-from Bit_string_tools import x_gates_region
-os.chdir('../Encoding/QRAM-Encoding')
+from Preprocessing.Classical_boolean_tests import is_log_concave_encoding_compatible
+from Preprocessing.Classical_data_preparation import lineic_preprocessing, euclidean_norm
+from BitStringTools.Bit_string_tools import x_gates_region
 import numpy as np
 from qiskit.aqua.circuits.gates import mcry
 
