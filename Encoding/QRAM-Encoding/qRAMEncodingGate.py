@@ -1,15 +1,10 @@
 from qiskit import QuantumRegister
 from qiskit.extensions.standard.u3 import U3Gate
 from qiskit.extensions.standard.ry import RYGate
-import os
-os.chdir('../../Preprocessing')
-from Classical_data_preparation import lineic_preprocessing, euclidean_norm
-from Classical_boolean_tests import is_log_concave_encoding_compatible
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir('../BitStringTools')
-from Bit_string_tools import XRegionGate
-os.chdir('../Encoding/QRAM-Encoding')
+from AbstractGates.qiwiGate import qiwiGate
+from BitStringTools.Bit_string_tools import XRegionGate
+from Preprocessing.Classical_data_preparation import lineic_preprocessing, euclidean_norm
+from Preprocessing.Classical_boolean_tests import is_log_concave_encoding_compatible
 import numpy as np
 
 

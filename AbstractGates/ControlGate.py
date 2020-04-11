@@ -1,9 +1,6 @@
 from qiskit import QuantumRegister
-from qiwiGate import qiwiGate
-import os
-os.chdir("../BitStringTools")
-from Bit_string_tools import XRegionGate
-os.chdir("../AbstractGates")
+from AbstractGates.qiwiGate import qiwiGate
+from BitStringTools.Bit_string_tools import XRegionGate
 
 
 #TO BE TESTED
@@ -15,13 +12,13 @@ class ControlGate(qiwiGate):
     def __init__(self, num_ctrl_qubits, number, gate, least_significant_bit_first=True):
         self.num_qubits = num_ctrl_qubits + gate.num_qubits
         self.least_significant_bit_first = least_significant_bit_first
-        super().__init__(name=f"Control-" + gate.name + "(" + str(number) + ")", num_qubits=num_ctrl_qubits + gate.num_qubits, params=[num_ctrl_qubits, number, gate])
+        super().__init__(name=f"Control-" + gate.name + "(" + str(number) + ")", num_qubits=num_ctrl_qubits + gate.num_qubits, params=[num_ctrl_qubits, number, gate], least_significant_bit_first=least_significant_bit_first)
         
         
     def _define(self):
         if isinstance(self.params[2], qiwiGate) == True:
                 if self.least_significant_bit_first != self.params[2].least_significant_bit_first:
-                    raise NameError("The desired convention and the " + self.params[2] + "convention are not compatible.")                  
+                    raise NameError("The desired convention and the " + self.params[2].name + " convention are not compatible.")                  
         if self.params[1] >= 0 and self.params[1] < 2 ** self.params[0]:
             self.definition = []
             q = QuantumRegister(self.num_qubits)

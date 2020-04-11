@@ -1,0 +1,11 @@
+AbstractGates
+BinaryOracles
+BitStringTools
+Encoding
+Grover
+Preprocessing
+QFT
+QuantumAddition
+Symbolic
+Test
+Visualization

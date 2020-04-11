@@ -3,11 +3,7 @@ from qiskit.extensions.standard.x import CnotGate
 from qiskit.extensions.standard.h import HGate
 from qiskit.extensions.standard.u1 import Cu1Gate
 from qiskit import QuantumRegister
-import os
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir('../QFT')
-from math import pi
+from AbstractGates.qiwiGate import qiwiGate
 
 
 class DoSwapsGate(Gate):
@@ -32,7 +28,7 @@ class QFTGate(qiwiGate):
     def __init__(self, num_qubits, bool_swaps=True, least_significant_bit_first=True):
         self.num_qubits = num_qubits
         self.least_significant_bit_first = least_significant_bit_first
-        super().__init__(name=f"QFT", num_qubits=num_qubits, params=[bool_swaps])
+        super().__init__(name=f"QFT", num_qubits=num_qubits, params=[bool_swaps], least_significant_bit_first=least_significant_bit_first)
         
     def _define(self):
         self.definition = []

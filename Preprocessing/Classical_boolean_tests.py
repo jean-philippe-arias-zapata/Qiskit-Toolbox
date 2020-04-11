@@ -1,5 +1,5 @@
+from Preprocessing.Classical_data_preparation import lineic_preprocessing
 import numpy as np
-from Classical_data_preparation import lineic_preprocessing
 
 
 def is_stochastic_vector(distribution): #is the given array a stochastic vector ? Must be normalized (norm 1)

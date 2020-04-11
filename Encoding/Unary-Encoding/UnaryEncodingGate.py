@@ -2,14 +2,9 @@ from qiskit import QuantumRegister
 from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import CnotGate, XGate
 from qiskit.extensions.standard.ry import CryGate
-import os
-os.chdir('../../Preprocessing')
-from Classical_boolean_tests import is_stochastic_vector
-os.chdir('../Visualization')
-from Gate_visualization_tools import format_angle
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir('../Encoding/Unary-Encoding')
+from Preprocessing.Classical_boolean_tests import is_stochastic_vector
+from Visualization.Gate_visualization_tools import format_angle
+from AbstractGates.qiwiGate import qiwiGate
 import numpy as np
 
 

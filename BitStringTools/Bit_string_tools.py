@@ -1,10 +1,6 @@
 from qiskit import QuantumRegister
-from qiskit.circuit import Gate
 from qiskit.extensions.standard.x import XGate
-import os
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir('../BitStringTools')
+from AbstractGates.qiwiGate import qiwiGate
 
 
 def to_binary(decimal_number, num_qubits, least_significant_bit_first=True):

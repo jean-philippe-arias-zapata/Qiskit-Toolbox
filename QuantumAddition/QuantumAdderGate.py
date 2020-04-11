@@ -1,11 +1,7 @@
 from qiskit.extensions.standard.u1 import Cu1Gate
 from qiskit import QuantumRegister
-import os
-os.chdir('../AbstractGates')
-from qiwiGate import qiwiGate
-os.chdir('../QFT')
-from QFTGate import QFTGate
-os.chdir('../QuantumAddition')
+from AbstractGates.qiwiGate import qiwiGate
+from QFT.QFTGate import QFTGate
 from math import pi     
 
 
