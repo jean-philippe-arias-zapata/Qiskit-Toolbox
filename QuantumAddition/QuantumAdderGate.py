@@ -14,7 +14,7 @@ class QuantumAdderGate(qiwiGate):
         super().__init__(name=f"Quantum Adder", num_qubits=num_qubits, params=[], least_significant_bit_first=least_significant_bit_first)
         
     def _define(self):
-        self.definition = []
+        definition = []
         if self.num_qubits % 2 == 0:
             q = QuantumRegister(self.num_qubits)
             n = self.num_qubits//2
@@ -26,8 +26,9 @@ class QuantumAdderGate(qiwiGate):
             self.definition.append((QFTGate(n, False), y, []))
             for i in range(n):
                 for j in range(n - i):
-                    self.definition.append((Cu1Gate(pi / 2 ** j), [x[n - i - 1], y[n - 1 - i - j]], []))
-            self.definition.append((QFTGate(n, False).inverse(), y, []))
+                    definition.append((Cu1Gate(pi / 2 ** j), [x[n - i - 1], y[n - 1 - i - j]], []))
+            definition.append((QFTGate(n, False).inverse(), y, []))
             if self.least_significant_bit_first == False:
                 x = x[::-1]
                 y = y[::-1]
+        self.definition = definition

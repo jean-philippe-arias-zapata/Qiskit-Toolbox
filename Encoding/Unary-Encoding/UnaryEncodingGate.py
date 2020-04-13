@@ -33,7 +33,7 @@ class PartialSwapGate(Gate):
     
     def __init__(self, angle):
         self.angle = angle
-        super().__init__(name=f"PartialSwap(" + format_angle(angle, 10**(-3), 10) + ")", num_qubits=2, params=[angle])
+        super().__init__(name=f"PartialSwap(" + format_angle(angle, 10**(-3), 10) + ")", num_qubits=2, params=[])
     
     def _define(self):
         definition = []
@@ -54,20 +54,22 @@ class UnaryEncodingGate(qiwiGate):
     def __init__(self, distribution, least_significant_bit_first=True):
         self.num_qubits = len(distribution)
         self.least_significant_bit_first = least_significant_bit_first
-        super().__init__(name=f"Unary Encoding", num_qubits=len(distribution), params=distribution, least_significant_bit_first = least_significant_bit_first)
+        self.distribution = distribution
+        super().__init__(name=f"Unary Encoding", num_qubits=len(distribution), params=[], least_significant_bit_first = least_significant_bit_first)
     
     def _define(self):
-            self.definition = []
+            definition = []
             distribution_qubits = QuantumRegister(self.num_qubits)
-            theta = unary_encoding_angles(self.params)
+            theta = unary_encoding_angles(self.distribution)
             middle = int(self.num_qubits / 2)
             if self.least_significant_bit_first:
                 distribution_qubits = distribution_qubits[::-1]
-            self.definition.append((XGate(), [distribution_qubits[middle]], []))
-            self.definition.append((PartialSwapGate(theta[middle - 1]), [distribution_qubits[middle - 1], distribution_qubits[middle]], []))
+            definition.append((XGate(), [distribution_qubits[middle]], []))
+            definition.append((PartialSwapGate(theta[middle - 1]), [distribution_qubits[middle - 1], distribution_qubits[middle]], []))
             for step in range(middle - 1):
                 step = step + 1
-                self.definition.append((PartialSwapGate(theta[middle - 1 - step]), [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]], []))
-                self.definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], []))
+                definition.append((PartialSwapGate(theta[middle - 1 - step]), [distribution_qubits[middle - 1 - step], distribution_qubits[middle - step]], []))
+                definition.append((PartialSwapGate(-theta[middle - 1 + step]), [distribution_qubits[middle - 1 + step], distribution_qubits[middle + step]], []))
             if self.least_significant_bit_first:
                 distribution_qubits = distribution_qubits[::-1]
+            self.definition = definition

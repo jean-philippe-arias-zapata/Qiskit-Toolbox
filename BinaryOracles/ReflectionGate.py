@@ -10,7 +10,7 @@ class ReflectionGate(qiwiGate):
     """Reflection gate.
     
     If the input is:
-    - an int, it will be seen as the control register value ;
+    - an int, it will be seen as the control register value;
     - a list, it will be seen as a list of control register values.
     
     """
@@ -18,16 +18,18 @@ class ReflectionGate(qiwiGate):
     def __init__(self, num_qubits, list_values, least_significant_bit_first=True):
         self.num_qubits = num_qubits
         self.least_significant_bit_first = least_significant_bit_first
-        super().__init__(name=f"Reflection gate(" + str(list_values) +")", num_qubits=num_qubits, params=to_list(list_values), least_significant_bit_first=least_significant_bit_first)
+        self.list_values = to_list(list_values)
+        super().__init__(name=f"Reflection gate(" + str(list_values) +")", num_qubits=num_qubits, params=[], least_significant_bit_first=least_significant_bit_first)
 
     def _define(self):
-        self.definition = []
+        definition = []
         q = QuantumRegister(self.num_qubits)
-        self.definition.append((HGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((XGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((HGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((OracleGate(self.num_qubits, self.params, self.least_significant_bit_first), q, []))
-        self.definition.append((HGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((XGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((HGate(), [q[self.num_qubits - 1]], []))
-        self.definition.append((OracleGate(self.num_qubits, self.params, self.least_significant_bit_first), q, []))
+        definition.append((HGate(), [q[self.num_qubits - 1]], []))
+        definition.append((XGate(), [q[self.num_qubits - 1]], []))
+        definition.append((HGate(), [q[self.num_qubits - 1]], []))
+        definition.append((OracleGate(self.num_qubits, self.list_values, self.least_significant_bit_first), q, []))
+        definition.append((HGate(), [q[self.num_qubits - 1]], []))
+        definition.append((XGate(), [q[self.num_qubits - 1]], []))
+        definition.append((HGate(), [q[self.num_qubits - 1]], []))
+        definition.append((OracleGate(self.num_qubits, self.list_values, self.least_significant_bit_first), q, []))
+        self.definition = definition

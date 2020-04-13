@@ -41,13 +41,14 @@ class XRegionGate(qiwiGate):
     def __init__(self, num_qubits, number, least_significant_bit_first=True):
         self.num_qubits = num_qubits
         self.least_significant_bit_first = least_significant_bit_first
-        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[number], least_significant_bit_first=least_significant_bit_first)
+        self.number = number
+        super().__init__(name=f"XRegion(" + str(number) + ")", num_qubits=num_qubits, params=[], least_significant_bit_first=least_significant_bit_first)
     
     def _define(self):
-        self.definition = []
+        definition = []
         q = QuantumRegister(self.num_qubits)
-        binary = to_binary(self.params[0], self.num_qubits, self.least_significant_bit_first)
+        binary = to_binary(self.number, self.num_qubits, self.least_significant_bit_first)
         for i in range(self.num_qubits):
             if binary[i] == '0':
-                self.definition.append((XGate(), [q[self.num_qubits - i - 1]], []))
-
+                definition.append((XGate(), [q[self.num_qubits - i - 1]], []))
+        self.definition = definition
